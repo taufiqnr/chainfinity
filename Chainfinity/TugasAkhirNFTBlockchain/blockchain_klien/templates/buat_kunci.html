@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Buat Kunci | Pengguna
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="card-body">
+                <h4 class="card-title">Buat Kunci</h4>
+                <p class="card-text">Klik tombol ini untuk membuat Public Key dan Private Key</p>
+                <input type="button" class="btn btn-primary btn-lg" value="Buat Kunci">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+      <label class="col-sm-2"> <strong>Public Key</strong>:</label>
+      <div class="col-sm-10">
+        <textarea id="public_key" rows="5" class="form-control" readonly></textarea>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <label class="col-sm-2"><strong>Private Key</strong>:</label>
+      <div class="col-sm-10">
+        <textarea id="private_key" rows="5" class="form-control" readonly></textarea>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row" id="warning" style="display:none">
+      <div class="col-sm-12">
+        <div class="alert alert-danger" role="alert">
+          <strong>PERINGATAN</strong>:
+          <ul>
+            <li>Simpan dan catat kedua kunci diatas. Kunci tidak dapat digenerasikan kembali</li>
+            <li>Jagan sebarkan <strong>PRIVATE KEY</strong> Anda kepada siapapun!</li>
+          </ul>
+        </div>
+      </div>
+    </div>    
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function() {
+        $('input').click(function() {
+
+            $.ajax({
+                url: '/buat_kunci',
+                type: 'GET',
+                success: function(response) {
+                    document.getElementById("public_key").innerHTML = response['public_key'];
+                    document.getElementById("private_key").innerHTML = response['private_key'];
+                    document.getElementById("warning").style.display = "block";
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Konfigurasi | Chainfinity
+{% endblock %}
+
+{% block body %}
+<!-- Add nodes -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card-body">
+        <h4 class="card-title">Tambah Node Blockchain</h4>
+        <p class="card-text">
+          Masukkan daftar alamat URL node blockchain dipisahkan dengan tanda koma dan klik tombol "Tambahkan Node" untuk menambahkan sebagai node baru.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container alert alert-secondary">
+  <form id="form_node">
+    <div class="row">
+      <label class="col-sm-2">URL Node:</label>
+      <div class="col-sm-10">
+        <input type="text" name="nodes" id="nodes" rows="2" class="form-control">
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <input type="button" id="add_node_button" class="btn btn-primary btn-lg" value="Tambahkan Node">
+      </div>
+    </div>
+  </form>
+</div>
+
+<hr>
+
+<!-- List of nodes -->
+<div class="container">
+  <div class="row">
+
+    <div class="col-lg-12">
+      <div class="card-body">
+        <h4 class="card-title">Node ini dapat menerima data Blockchain dari daftar node berikut: </h4>
+      </div>
+    </div>
+
+    <div class="col-lg-12" id="daftar_node">
+
+    </div>
+
+  </div>
+</div>  
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function() {
+        $('#add_node_button').click(function() {
+            $.ajax({
+                url: '/tambah_node',
+                type: 'POST',
+                dataType: 'application/json',
+                data: $('#form_node').serialize(),
+                success: function(response) {
+                    document.getElementById('nodes').value = '';
+                    window.location.reload();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        $.ajax({
+            url: '/node_blockchain',
+            type: 'GET',
+            success: function(response) {
+                let nodes = '';
+                for (i=0; i<response['nodes'].length; i++) {
+                    node = "<li><a href=http://" + response['nodes'][i] + ">" + response['nodes'][i] + "</a></li>"
+                    document.getElementById('daftar_node').innerHTML += node;
+                }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+    });
+
+</script>
+{% endblock %}
